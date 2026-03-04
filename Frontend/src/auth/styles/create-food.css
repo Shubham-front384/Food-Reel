@@ -1,0 +1,199 @@
+@import './variables.css';
+
+/* Utility */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+.create-food {
+  background: #071526;
+  min-height: 100vh;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-food__form {
+  width: 100%;
+  max-width: var(--container-max);
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  box-sizing: border-box;
+  border: 1px solid #FAFAFA;
+}
+
+.create-food__title {
+  margin: 0 0 0.75rem 0;
+  color: var(--text);
+  font-size: 1.25rem;
+}
+
+.create-food__grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field__label {
+  font-size: 0.825rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.field__input {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #e6edf2;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text);
+  background: #fff;
+}
+
+.field__textarea {
+  resize: vertical;
+}
+
+.video-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.video-input__file {
+  font-size: 0.9rem;
+}
+
+.video-input__upload {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(6, 182, 212, 0.12),
+    rgba(190, 24, 93, 0.06)
+  );
+  color: var(--primary);
+  border: 1px dashed rgba(6, 182, 212, 0.18);
+  cursor: pointer;
+  width: fit-content;
+}
+
+.video-input__upload svg {
+  color: var(--primary);
+}
+
+.video-input__placeholder {
+  padding: 1rem;
+  border: 1px dashed #e6edf2;
+  border-radius: 8px;
+  color: var(--muted);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-input__preview-wrap {
+  position: relative;
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 200px;
+}
+
+.video-input__preview-wrap video {
+  height: 200px;
+}
+
+.video-input__preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+}
+
+.video-input__play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.45);
+  border: none;
+  border-radius: 999px;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.video-input__play svg {
+  display: block;
+}
+
+.create-food__actions {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn--primary {
+  background: #0a4083;
+  color: white;
+}
+
+/* Tablet layout */
+@media (min-width: 768px) {
+  .create-food__form {
+    padding: 1.5rem;
+  }
+
+  .create-food__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .field--full {
+    grid-column: 1 / -1;
+  }
+
+  .field--video {
+    max-height: 320px;
+  }
+}
+
+/* Desktop tweaks */
+@media (min-width: 1024px) {
+  .create-food__form {
+    padding: 2rem;
+  }
+
+  .create-food__title {
+    font-size: 1.5rem;
+  }
+}
