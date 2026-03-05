@@ -1,4 +1,6 @@
 const foodItemModel = require('../models/foodItem.model');
+const likeModel = require('../models/likes.model');
+const saveModel = require('../models/save.model');
 const foodPartnerModel = require('../models/foodPartner.model');
 const jwt = require('jsonwebtoken');
 const { ImageKit, toFile } = require('@imagekit/nodejs');
@@ -67,7 +69,7 @@ const handleCreateFoodItem = async (req, res) => {
 
 const handleGetFoodItem = async (req, res) => {
   try {
-    const foodItem = await foodItemModel.find();
+    const foodItem = await foodItemModel.find().populate("foodPartner", "name").sort({ createdAt: -1 });
 
     return res.status(200).json({
       msg: "Food item fetched successfully.",
@@ -114,8 +116,146 @@ const handleGetFoodItemBasedOnId = async (req, res) => {
   }
 }
 
+const handleLikeFood = async (req, res) => {
+  const { id } = req.body;
+  const user = req.user;
+
+  if (!id) {
+    return res.status(400).json({
+      msg: "Id is required."
+    });
+  }
+
+  try {
+    const isAlreadyLiked = await likeModel.findOne({
+      user: user._id,
+      food: id
+    }).lean();
+
+    if (isAlreadyLiked) {
+      await likeModel.deleteOne({
+        user: user._id,
+        food: id
+      });
+
+      const updatedFood = await foodItemModel.findByIdAndUpdate(
+        id,
+        { $inc: { likeCount: -1 } },
+        { new: true }
+      );
+
+      return res.status(200).json({
+        msg: "Food unlike successfully",
+        likeCount: updatedFood.likeCount
+      });
+    }
+
+    const like = await likeModel.create({
+      user: user._id,
+      food: id
+    });
+
+    const updatedFood = await foodItemModel.findByIdAndUpdate(
+      id,
+      { $inc: { likeCount: 1 } },
+      { new: true }
+    );
+
+    return res.status(201).json({
+      msg: "Food like successfully",
+      likeCount: updatedFood.likeCount
+    });
+
+  } catch (error) {
+    console.error("Like error: ", error.message);
+    return res.status(500).json({
+      msg: "Internal server error."
+    });
+  }
+};
+
+const handleSaveFood = async (req, res) => {
+  const { id } = req.body;
+  const user = req.user;
+
+  if (!id) {
+    return res.status(400).json({
+      msg: "Id is required."
+    });
+  }
+
+  try {
+
+    const isAlreadySaved = await saveModel.findOne({
+      user: user._id,
+      food: id
+    });
+
+    if (isAlreadySaved) {
+
+      await saveModel.deleteOne({
+        user: user._id,
+        food: id
+      });
+
+      return res.status(200).json({
+        msg: "Food unsaved successfully"
+      });
+
+    }
+
+    const saved = await saveModel.create({
+      user: user._id,
+      food: id
+    });
+
+    return res.status(201).json({
+      msg: "Food saved successfully",
+      saved
+    });
+
+  } catch (error) {
+    console.error("Save error: ", error.message);
+    return res.status(500).json({
+      msg: "Internal server error."
+    });
+  }
+};
+
+const handleGetSavedFood = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({
+        msg: "Unauthorized user"
+      });
+    }
+
+    const userId = req.user._id;
+
+    const saved = await saveModel
+      .find({ user: userId })
+      .populate("food");
+
+    const savedFood = saved.map(item => item.food);
+
+    return res.status(200).json({
+      savedFood
+    });
+
+  } catch (error) {
+    console.error("Get saved food error:", error);
+
+    return res.status(500).json({
+      msg: "Internal server error"
+    });
+  }
+};
+
 module.exports = {
   handleCreateFoodItem,
   handleGetFoodItem,
-  handleGetFoodItemBasedOnId
+  handleGetFoodItemBasedOnId,
+  handleLikeFood,
+  handleSaveFood,
+  handleGetSavedFood
 };

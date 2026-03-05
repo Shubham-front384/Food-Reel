@@ -2,28 +2,26 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { Heart, MessageCircle, Bookmark } from "lucide-react";
 
-import "../../../auth/styles/reels.css";
 import { useFood } from "../../hooks/useFood";
 import { useReelsVideo } from "../../hooks/useReelsVideo";
+
+import "../../../auth/styles/reels.css";
 import BottomNav from "../../../components/BottomNav";
 
-const Home = () => {
+const Saved = () => {
   const {
     food = [],
     loading,
-    handleGetFoodReels,
+    handleGetSavedFood,
     handleLikeFood,
-    handleSaveFood,
+    handleSaveFood
   } = useFood();
 
   const navigate = useNavigate();
-
-  // custom hook for autoplay
   const videoRefs = useReelsVideo(food);
 
-  // fetch reels
   useEffect(() => {
-    handleGetFoodReels();
+    handleGetSavedFood();
   }, []);
 
   const handleVisitStore = (storeId) => {
@@ -31,15 +29,16 @@ const Home = () => {
   };
 
   if (loading) {
-    return <div className="loading-screen">Loading reels...</div>;
+    return <div className="loading-screen">Loading saved reels...</div>;
   }
 
   if (!food.length) {
-    return <div className="loading-screen">No reels available</div>;
+    return <div className="loading-screen">No saved reels</div>;
   }
 
   return (
     <div className="reels-container">
+
       <div className="reels-viewport">
 
         {food.map((item, index) => (
@@ -74,10 +73,13 @@ const Home = () => {
                 <div className="comment-icon">
                   <button
                     className="icon-button"
+                    onClick={() => navigate(`/reel/${item._id}`)}
                   >
                     <MessageCircle size={26} color="#fff" />
                   </button>
-                  <span className="icon-label">Comment</span>
+                  <span className="icon-label">
+                    Comment
+                  </span>
                 </div>
 
                 <div className="save-icon">
@@ -87,7 +89,9 @@ const Home = () => {
                   >
                     <Bookmark size={26} color="#fff" />
                   </button>
-                  <span className="icon-label">Save</span>
+                  <span className="icon-label">
+                    Unsave
+                  </span>
                 </div>
 
               </div>
@@ -121,8 +125,9 @@ const Home = () => {
       </div>
 
       <BottomNav />
+
     </div>
   );
 };
 
-export default Home;
+export default Saved;

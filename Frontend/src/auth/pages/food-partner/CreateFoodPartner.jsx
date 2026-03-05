@@ -1,9 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import '../../styles/create-food.css';
 import { useFood } from "../../hooks/useFood";
+import { useNavigate } from "react-router";
 
 const CreateFoodPartner = () => {
   const { handleCreateFoodReels, loading } = useFood();
+  const navigate = useNavigate();
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -18,7 +20,7 @@ const CreateFoodPartner = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!videoFile) {
@@ -37,6 +39,7 @@ const CreateFoodPartner = () => {
       setDescription("");
       setVideoFile(null);
       setVideoPreview(null);
+      navigate("/");
     }
   };
 
